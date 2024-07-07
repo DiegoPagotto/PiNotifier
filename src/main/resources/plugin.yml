@@ -1,0 +1,8 @@
+name: PINotifier
+version: '${project.version}'
+main: org.piegottin.pinotifier.PINotifier
+api-version: '1.20'
+commands:
+  pinotifier:
+    description: Gerencia sua lista de amigos
+    usage: /pinotifier add <nick>, /pinotifier remove <nick>, ou /pinotifier list
