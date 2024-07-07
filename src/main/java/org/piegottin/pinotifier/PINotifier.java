@@ -18,6 +18,20 @@ public final class PINotifier extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        getLogger().info("""
+                  \n
+         _____ _   _   _       _   _  __ _          \s
+        |  __ (_) | \\ | |     | | (_)/ _(_)         \s
+        | |__) |  |  \\| | ___ | |_ _| |_ _  ___ _ __\s
+        |  ___/ | | . ` |/ _ \\| __| |  _| |/ _ \\ '__|
+        | |   | | | |\\  | (_) | |_| | | | |  __/ |  \s
+        |_|   |_| |_| \\_|\\___/ \\__|_|_| |_|\\___|_|  \s
+                                                             \s
+                                                             \s
+                \n Made with <3 by Piegottin
+        """);
+
+
         configFile = new File(getDataFolder(), "config.yml");
         config = YamlConfiguration.loadConfiguration(configFile);
 
