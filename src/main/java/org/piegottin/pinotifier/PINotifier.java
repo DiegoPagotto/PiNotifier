@@ -5,7 +5,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.piegottin.pinotifier.executors.PINotifierCommandExecutor;
+import org.piegottin.pinotifier.gui.FriendsGUI;
 import org.piegottin.pinotifier.listeners.PlayerJoinListener;
+import org.piegottin.pinotifier.services.friends.FriendsService;
 import org.piegottin.pinotifier.tasks.ConfigSaveTask;
 
 import java.io.File;
@@ -17,6 +19,9 @@ public final class PINotifier extends JavaPlugin {
 
     private ConfigurationSection playerSection;
     private ConfigurationSection tokenSection;
+    private FriendsGUI friendsGUI;
+    private FriendsService friendsService;
+
 
     @Override
     public void onEnable() {
@@ -42,8 +47,11 @@ public final class PINotifier extends JavaPlugin {
         tokenSection = createTokensSection();
         new ConfigSaveTask(this).runTaskTimer(this, 600, 600);
 
+        friendsService = new FriendsService(playerSection);
+        friendsGUI = new FriendsGUI(friendsService);
+
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerSection, tokenSection), this);
-        getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor(playerSection));
+        getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor(playerSection, friendsGUI, friendsService));
     }
 
     @Override
