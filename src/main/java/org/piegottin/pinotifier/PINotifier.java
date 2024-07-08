@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.piegottin.pinotifier.executors.PINotifierCommandExecutor;
 import org.piegottin.pinotifier.listeners.PlayerJoinListener;
+import org.piegottin.pinotifier.tasks.ConfigSaveTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,9 +27,9 @@ public final class PINotifier extends JavaPlugin {
         |  ___/ | | . ` |/ _ \\| __| |  _| |/ _ \\ '__|
         | |   | | | |\\  | (_) | |_| | | | |  __/ |  \s
         |_|   |_| |_| \\_|\\___/ \\__|_|_| |_|\\___|_|  \s
-                                                             \s
-                                                             \s
-                \n Made with <3 by Piegottin
+        \n
+        
+        Made with <3 by Piegottin
         """);
 
 
@@ -40,6 +41,7 @@ public final class PINotifier extends JavaPlugin {
             getLogger().info("Creating new player notification list");
             playerNotificationLists = config.createSection("players");
         }
+        new ConfigSaveTask(this).runTaskTimer(this, 20, 20);
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerNotificationLists), this);
         getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor(playerNotificationLists));
@@ -47,6 +49,10 @@ public final class PINotifier extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        saveYamlConfig();
+    }
+
+    public void saveYamlConfig() {
         try {
             config.save(configFile);
         } catch (IOException e) {
