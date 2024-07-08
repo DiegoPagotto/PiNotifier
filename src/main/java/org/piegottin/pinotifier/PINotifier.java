@@ -42,8 +42,8 @@ public final class PINotifier extends JavaPlugin {
         tokenSection = createTokensSection();
         new ConfigSaveTask(this).runTaskTimer(this, 600, 600);
 
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerSection), this);
-        getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor(playerSection, tokenSection));
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerSection, tokenSection), this);
+        getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor(playerSection));
     }
 
     @Override
