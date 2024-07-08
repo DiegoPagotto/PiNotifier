@@ -1,10 +1,10 @@
-package org.piegottin.pinotifier.services.implementation;
+package org.piegottin.pinotifier.services.notifications.implementation;
 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import org.bukkit.configuration.ConfigurationSection;
-import org.piegottin.pinotifier.services.NotificationService;
+import org.piegottin.pinotifier.services.notifications.NotificationService;
 
 import java.util.Objects;
 
