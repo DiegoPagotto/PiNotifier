@@ -134,4 +134,12 @@ public class PINotifierCommandExecutor implements CommandExecutor {
         return playerSection.getStringList("friends");
     }
 
+    private String getPlayerPhone(Player player) {
+        ConfigurationSection playerSection = createOrGetPlayerSection(player);
+        ConfigurationSection infoSection = playerSection.getConfigurationSection("info");
+        if (infoSection == null) {
+            return null;
+        }
+        return infoSection.getString("phone");
+    }
 }
