@@ -14,11 +14,10 @@ import static org.bukkit.Bukkit.getLogger;
 
 public class PINotifierCommandExecutor implements CommandExecutor {
     private final ConfigurationSection playerSection;
-    private final NotificationService notificationService;
 
-    public PINotifierCommandExecutor(ConfigurationSection playerSection, ConfigurationSection tokenSection) {
+
+    public PINotifierCommandExecutor(ConfigurationSection playerSection) {
         this.playerSection = playerSection;
-        this.notificationService = new WhatsAppNotificationService(tokenSection);
     }
 
     @Override
@@ -132,14 +131,5 @@ public class PINotifierCommandExecutor implements CommandExecutor {
     private List<String> getFriendsList(Player player) {
         ConfigurationSection playerSection = createOrGetPlayerSection(player);
         return playerSection.getStringList("friends");
-    }
-
-    private String getPlayerPhone(Player player) {
-        ConfigurationSection playerSection = createOrGetPlayerSection(player);
-        ConfigurationSection infoSection = playerSection.getConfigurationSection("info");
-        if (infoSection == null) {
-            return null;
-        }
-        return infoSection.getString("phone");
     }
 }
