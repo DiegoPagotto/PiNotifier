@@ -5,11 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.piegottin.pinotifier.services.NotificationService;
-import org.piegottin.pinotifier.services.implementation.WhatsAppNotificationService;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.piegottin.pinotifier.services.notifications.NotificationService;
+import org.piegottin.pinotifier.services.notifications.implementation.WhatsAppNotificationService;
 
 import static org.bukkit.Bukkit.getLogger;
 
