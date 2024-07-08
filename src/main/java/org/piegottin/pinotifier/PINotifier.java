@@ -15,7 +15,8 @@ public final class PINotifier extends JavaPlugin {
     private FileConfiguration config;
     private File configFile;
 
-    private ConfigurationSection playerNotificationLists;
+    private ConfigurationSection playerSection;
+    private ConfigurationSection tokenSection;
 
     @Override
     public void onEnable() {
@@ -36,20 +37,37 @@ public final class PINotifier extends JavaPlugin {
         configFile = new File(getDataFolder(), "config.yml");
         config = YamlConfiguration.loadConfiguration(configFile);
 
-        playerNotificationLists = config.getConfigurationSection("players");
-        if (playerNotificationLists == null) {
-            getLogger().info("Creating new player notification list");
-            playerNotificationLists = config.createSection("players");
-        }
-        new ConfigSaveTask(this).runTaskTimer(this, 20, 20);
+        playerSection = createPlayerSection();
 
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerNotificationLists), this);
-        getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor(playerNotificationLists));
+        tokenSection = createTokensSection();
+        new ConfigSaveTask(this).runTaskTimer(this, 600, 600);
+
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerSection), this);
+        getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor(playerSection, tokenSection));
     }
 
     @Override
     public void onDisable() {
         saveYamlConfig();
+    }
+
+    private ConfigurationSection createPlayerSection() {
+        if (!config.contains("players")) {
+            config.createSection("players");
+        }
+        return config.getConfigurationSection("players");
+    }
+
+    private ConfigurationSection createTokensSection() {
+        if (!config.contains("tokens")) {
+            getLogger().info("Creating tokens section in config.yml");
+            config.createSection("tokens");
+            config.createSection("tokens.twilio");
+            config.set("tokens.twilio.ACCOUNT_SID", "'YOUR_ACCOUNT_SID'");
+            config.set("tokens.twilio.AUTH_TOKEN", "'YOUR_AUTH_TOKEN'");
+            config.set("tokens.twilio.TWILIO_NUMBER", "'YOUR_TWILIO_NUMBER'");
+        }
+        return config.getConfigurationSection("tokens");
     }
 
     public void saveYamlConfig() {
