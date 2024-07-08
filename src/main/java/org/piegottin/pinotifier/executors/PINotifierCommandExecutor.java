@@ -6,7 +6,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.bukkit.Bukkit.getLogger;
 
 public class PINotifierCommandExecutor implements CommandExecutor {
     private ConfigurationSection playerNotificationLists;
@@ -65,10 +68,10 @@ public class PINotifierCommandExecutor implements CommandExecutor {
     }
 
     private void addNotification(Player player, String targetPlayer) {
-        List<String> notifications = playerNotificationLists.getStringList(player.getUniqueId().toString());
-        if (!notifications.contains(targetPlayer)) {
-            notifications.add(targetPlayer);
-            playerNotificationLists.set(player.getUniqueId().toString(), notifications);
+        List<String> friends = getFriendsList(player);
+        if (!friends.contains(targetPlayer)) {
+            friends.add(targetPlayer);
+            playerNotificationLists.set(player.getName() + ".friends", friends);
             player.sendMessage("Você adicionou " + targetPlayer + " à sua lista de notificações.");
         } else {
             player.sendMessage(targetPlayer + " já está na sua lista de notificações.");
@@ -76,10 +79,11 @@ public class PINotifierCommandExecutor implements CommandExecutor {
     }
 
     private void removeNotification(Player player, String targetPlayer) {
-        List<String> notifications = playerNotificationLists.getStringList(player.getUniqueId().toString());
-        if (notifications.contains(targetPlayer)) {
-            notifications.remove(targetPlayer);
-            playerNotificationLists.set(player.getUniqueId().toString(), notifications);
+        List<String> friends = getFriendsList(player);
+        if (friends.contains(targetPlayer)) {
+            friends.remove(targetPlayer);
+            getLogger().info(friends.toString());
+            playerNotificationLists.set(player.getName() + ".friends", friends);
             player.sendMessage("Você removeu " + targetPlayer + " da sua lista de notificações.");
         } else {
             player.sendMessage(targetPlayer + " não está na sua lista de notificações.");
@@ -87,10 +91,10 @@ public class PINotifierCommandExecutor implements CommandExecutor {
     }
 
     private void listNotifications(Player player) {
-        List<String> notifications = playerNotificationLists.getStringList(player.getUniqueId().toString());
-        if (!notifications.isEmpty()) {
-            player.sendMessage("Sua lista de notificações:");
-            for (String notification : notifications) {
+        List<String> friends = getFriendsList(player);
+        if (!friends.isEmpty()) {
+            player.sendMessage("\nSua lista de notificações:");
+            for (String notification : friends) {
                 player.sendMessage("- " + notification);
             }
         } else {
@@ -100,10 +104,7 @@ public class PINotifierCommandExecutor implements CommandExecutor {
 
     private void setPhone(Player player, String phone) {
 
-        ConfigurationSection playerSection = playerNotificationLists.getConfigurationSection(player.getUniqueId().toString());
-        if (playerSection == null) {
-            playerSection = playerNotificationLists.createSection(player.getUniqueId().toString());
-        }
+        ConfigurationSection playerSection = createPlayerSectionIfNotExists(player);
 
         ConfigurationSection infoSection = playerSection.getConfigurationSection("info");
         if (infoSection == null) {
@@ -112,5 +113,21 @@ public class PINotifierCommandExecutor implements CommandExecutor {
 
         infoSection.set("phone", phone);
         player.sendMessage("Seu número de telefone foi definido como " + phone + ".");
+    }
+
+
+
+    private ConfigurationSection createPlayerSectionIfNotExists(Player player) {
+        ConfigurationSection playerSection = playerNotificationLists.getConfigurationSection(player.getName());
+        if (playerSection == null) {
+            getLogger().info("Creating new player section for " + player.getName());
+            playerSection = playerNotificationLists.createSection(player.getName());
+        }
+        return playerSection;
+    }
+
+    private List<String> getFriendsList(Player player) {
+        ConfigurationSection playerSection = createPlayerSectionIfNotExists(player);
+        return playerSection.getStringList("friends");
     }
 }
