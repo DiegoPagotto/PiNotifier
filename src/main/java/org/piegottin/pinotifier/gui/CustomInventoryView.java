@@ -7,14 +7,22 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class CustomInventoryView extends InventoryView {
+    private static final Map<Inventory, CustomInventoryView> inventoryViewMap = new HashMap<>();
     private final Inventory inventory;
 
     public CustomInventoryView(Player player, int size, String title) {
         this.inventory = Bukkit.createInventory(player, size);
         this.setTitle(title);
+        inventoryViewMap.put(inventory, this);
+    }
+
+    public static CustomInventoryView getFromInventory(Inventory inventory) {
+        return inventoryViewMap.get(inventory);
     }
 
     @Override
