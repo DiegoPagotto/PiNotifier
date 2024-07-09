@@ -6,6 +6,7 @@ import org.piegottin.pinotifier.config.Configs;
 import org.piegottin.pinotifier.executors.PINotifierCommandExecutor;
 import org.piegottin.pinotifier.config.CustomConfig;
 import org.piegottin.pinotifier.gui.FriendsGUI;
+import org.piegottin.pinotifier.gui.SettingsGUI;
 import org.piegottin.pinotifier.listeners.AsyncMessageListener;
 import org.piegottin.pinotifier.listeners.InventoryClickListener;
 import org.piegottin.pinotifier.listeners.PlayerJoinListener;
@@ -22,6 +23,7 @@ public final class PINotifier extends JavaPlugin {
     private final HashMap<String, CustomConfig> configs = new HashMap<>();
 
     private FriendsGUI friendsGUI;
+    private SettingsGUI settingsGUI;
     private FriendsService friendsService;
 
     @Override
@@ -50,9 +52,10 @@ public final class PINotifier extends JavaPlugin {
 
         friendsService = new FriendsService();
         friendsGUI = new FriendsGUI(friendsService);
+        settingsGUI = new SettingsGUI();
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
-        getServer().getPluginManager().registerEvents(new InventoryClickListener(friendsService), this);
+        getServer().getPluginManager().registerEvents(new InventoryClickListener(friendsService, settingsGUI), this);
         getServer().getPluginManager().registerEvents(new AsyncMessageListener(friendsService), this);
         getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor(friendsGUI, friendsService));
     }
