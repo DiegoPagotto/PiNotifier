@@ -1,11 +1,9 @@
 package org.piegottin.pinotifier.gui;
 
 import lombok.AllArgsConstructor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.piegottin.pinotifier.gui.enums.CustomSkulls;
+import org.piegottin.pinotifier.enums.CustomSkulls;
 import org.piegottin.pinotifier.services.friends.FriendsService;
 
 import java.util.List;

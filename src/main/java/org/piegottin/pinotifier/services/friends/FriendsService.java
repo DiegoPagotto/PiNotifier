@@ -7,11 +7,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.piegottin.pinotifier.config.Configs;
 import org.piegottin.pinotifier.config.CustomConfig;
+import org.piegottin.pinotifier.entities.ChatEvent;
 import org.piegottin.pinotifier.utils.MessageUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -19,7 +18,7 @@ import static org.bukkit.Bukkit.getLogger;
 public class FriendsService {
     private final CustomConfig playerConfig = Configs.getUsersConfig();
     @Getter
-    private final HashMap<UUID, Boolean> awaitingMessage = new HashMap<>();
+    private final List<ChatEvent> awaitingMessage = new ArrayList<>();
 
     public void createPlayerSection(Player player) {
         ConfigurationSection playerSection = this.playerConfig.getConfigurationSection("players." + player.getName());
@@ -104,5 +103,11 @@ public class FriendsService {
     public List<String> getFriendsList(Player player) {
         ConfigurationSection playerSection = createOrGetPlayerSection(player);
         return playerSection.getStringList("friends");
+    }
+
+    public Optional<ChatEvent> getChatEventByPlayerId(UUID playerId) {
+        return this.awaitingMessage.stream()
+                .filter(chatEvent -> chatEvent.getPlayerId().equals(playerId))
+                .findFirst();
     }
 }
