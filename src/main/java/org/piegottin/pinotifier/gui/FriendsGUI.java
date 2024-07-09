@@ -1,5 +1,7 @@
 package org.piegottin.pinotifier.gui;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import lombok.AllArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -8,9 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.piegottin.pinotifier.gui.enums.CustomSkulls;
 import org.piegottin.pinotifier.services.friends.FriendsService;
 
+import java.lang.reflect.Field;
+import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class FriendsGUI {
@@ -27,6 +33,10 @@ public class FriendsGUI {
         }
 
         fillEmptySlots(friends, friendsGUI);
+
+        ItemStack head = getCustomHead(CustomSkulls.ADD_SIGN.getBase64(), "§aAdicionar amigo");
+
+        friendsGUI.getTopInventory().setItem(INVENTORY_SIZE - 9, head);
 
         player.openInventory(friendsGUI.getTopInventory());
     }
@@ -53,5 +63,25 @@ public class FriendsGUI {
         playerHead.setItemMeta(meta);
 
         return playerHead;
+    }
+
+    public static ItemStack getCustomHead(String base64, String title) {
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta headMeta = (SkullMeta) head.getItemMeta();
+
+        UUID uuid = UUID.randomUUID();
+        GameProfile profile = new GameProfile(uuid, "custom_head");
+        profile.getProperties().put("textures", new Property("textures", base64));
+        headMeta.setDisplayName(title);
+        try {
+            Field profileField = headMeta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(headMeta, profile);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        head.setItemMeta(headMeta);
+        return head;
     }
 }
