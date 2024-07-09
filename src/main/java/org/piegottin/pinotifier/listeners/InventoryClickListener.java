@@ -1,4 +1,4 @@
-package org.piegottin.pinotifier.gui;
+package org.piegottin.pinotifier.listeners;
 
 import lombok.AllArgsConstructor;
 import org.bukkit.ChatColor;
@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.piegottin.pinotifier.gui.CustomInventoryView;
 import org.piegottin.pinotifier.services.friends.FriendsService;
 
 import static org.bukkit.Bukkit.getLogger;
@@ -29,6 +30,13 @@ public class InventoryClickListener implements Listener {
 
                 if (itemMeta != null && itemMeta.hasDisplayName()) {
                     if(clickedItem.getItemMeta() instanceof SkullMeta){
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+                        if(itemMeta.getDisplayName().equals("§aAdicionar amigo")){
+                            customView.close();
+                            player.sendMessage("§aDigite no chat o nome do amigo que deseja adicionar.");
+                            friendsService.getAwaitingMessage().put(player.getUniqueId(), true);
+                            return;
+                        }
                         removeFriend(player, itemMeta, customView);
                     } else {
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
