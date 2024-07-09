@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.piegottin.pinotifier.services.friends.FriendsService;
 
@@ -13,10 +14,11 @@ import java.util.List;
 
 @AllArgsConstructor
 public class FriendsGUI {
+    private final Integer INVENTORY_SIZE = 36;
     private final FriendsService friendsService;
 
     public void open(Player player){
-        CustomInventoryView friendsGUI = new CustomInventoryView(player, 36, "Amigos");
+        CustomInventoryView friendsGUI = new CustomInventoryView(player, INVENTORY_SIZE, "Amigos");
         List<String> friends = friendsService.getFriendsList(player);
 
         for (String friend : friends) {
@@ -24,7 +26,20 @@ public class FriendsGUI {
             friendsGUI.getTopInventory().addItem(friendHead);
         }
 
+        fillEmptySlots(friends, friendsGUI);
+
         player.openInventory(friendsGUI.getTopInventory());
+    }
+
+    private void fillEmptySlots(List<String> friends, CustomInventoryView friendsGUI) {
+        ItemStack emptySlot = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta emptySlotMeta = emptySlot.getItemMeta();
+        emptySlotMeta.setDisplayName("§7");
+        emptySlot.setItemMeta(emptySlotMeta);
+
+        for(int slotIndex = friends.size(); slotIndex < INVENTORY_SIZE; slotIndex++){
+            friendsGUI.getTopInventory().setItem(slotIndex, emptySlot);
+        }
     }
 
     private ItemStack createPlayerHead(String playerName) {
