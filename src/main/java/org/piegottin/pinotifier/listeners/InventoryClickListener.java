@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.piegottin.pinotifier.gui.CustomInventoryView;
+import org.piegottin.pinotifier.gui.SettingsGUI;
 import org.piegottin.pinotifier.services.friends.FriendsService;
 import org.piegottin.pinotifier.utils.MessageUtils;
 
@@ -19,6 +20,7 @@ import static org.bukkit.Bukkit.getLogger;
 @AllArgsConstructor
 public class InventoryClickListener implements Listener {
     private final FriendsService friendsService;
+    private final SettingsGUI settingsGUI;
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
@@ -32,13 +34,11 @@ public class InventoryClickListener implements Listener {
                 if (itemMeta != null && itemMeta.hasDisplayName()) {
                     if(clickedItem.getItemMeta() instanceof SkullMeta){
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
-                        if(itemMeta.getDisplayName().equals("§aAdicionar amigo")){
-                            customView.close();
-                            player.sendMessage(MessageUtils.addUserViaChat);
-                            friendsService.getAwaitingMessage().put(player.getUniqueId(), true);
-                            return;
+                        switch (ChatColor.stripColor(itemMeta.getDisplayName())) {
+                            case "Adicionar amigo" -> addFriend(player, customView);
+                            case "Configurações" -> openSettings(player, customView);
+                            default -> removeFriend(player, itemMeta, customView);
                         }
-                        removeFriend(player, itemMeta, customView);
                     } else {
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
                     }
@@ -48,11 +48,23 @@ public class InventoryClickListener implements Listener {
         }
     }
 
+    private void addFriend(Player player, CustomInventoryView customView) {
+        customView.close();
+        player.sendMessage(MessageUtils.addUserViaChat);
+        friendsService.getAwaitingMessage().put(player.getUniqueId(), true);
+    }
+
     private void removeFriend(Player player, ItemMeta itemMeta, CustomInventoryView customView) {
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
         String playerName = ChatColor.stripColor(itemMeta.getDisplayName());
         friendsService.removeNotification(player, playerName);
         customView.close();
         getLogger().info("Removing " + playerName + " from " + player.getName() + "'s friends list.");
     }
+
+    private void openSettings(Player player, CustomInventoryView customView) {
+        customView.close();
+        settingsGUI.open(player);
+        player.sendMessage("§aAbrindo configurações...");
+    }
+
 }
