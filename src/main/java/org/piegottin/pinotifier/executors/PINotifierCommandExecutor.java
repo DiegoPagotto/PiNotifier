@@ -9,6 +9,7 @@ import org.piegottin.pinotifier.config.Configs;
 import org.piegottin.pinotifier.config.CustomConfig;
 import org.piegottin.pinotifier.gui.FriendsGUI;
 import org.piegottin.pinotifier.services.friends.FriendsService;
+import org.piegottin.pinotifier.utils.MessageUtils;
 
 @AllArgsConstructor
 public class PINotifierCommandExecutor implements CommandExecutor {
@@ -21,7 +22,7 @@ public class PINotifierCommandExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Este comando só pode ser executado por um jogador.");
+            sender.sendMessage(MessageUtils.onlyUser);
             return true;
         }
 
@@ -37,7 +38,7 @@ public class PINotifierCommandExecutor implements CommandExecutor {
 
         if ("add".equalsIgnoreCase(action)) {
             if (args.length < 2) {
-                sender.sendMessage("Uso: /pinotifier add <nick>");
+                sender.sendMessage(MessageUtils.wrongUsage + "/pinotifier add §e<nick>");
                 return true;
             }
 
@@ -45,7 +46,7 @@ public class PINotifierCommandExecutor implements CommandExecutor {
             friendsService.addNotification(player, targetPlayer);
         } else if ("remove".equalsIgnoreCase(action)) {
             if (args.length < 2) {
-                sender.sendMessage("Uso: /pinotifier remove <nick>");
+                sender.sendMessage(MessageUtils.wrongUsage + "/pinotifier remove §e<nick>");
                 return true;
             }
 
@@ -55,14 +56,14 @@ public class PINotifierCommandExecutor implements CommandExecutor {
             friendsService.listNotifications(player);
         } else if ("setphone".equalsIgnoreCase(action)) {
             if (args.length < 2) {
-                sender.sendMessage("Uso: /pinotifier setphone <phone>");
+                sender.sendMessage(MessageUtils.wrongUsage + "/pinotifier setphone §e<phone>");
                 return true;
             }
 
             String phone = args[1];
             friendsService.setPhone(player, phone);
         } else {
-            sender.sendMessage("Uso: /pinotifier add <nick>, /pinotifier remove <nick>, ou /pinotifier list");
+            sender.sendMessage(MessageUtils.wrongUsage + "/pinotifier add §e<nick>,§r /pinotifier remove §e<nick>,§r ou /pinotifier list");
         }
 
         return true;

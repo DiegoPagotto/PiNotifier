@@ -7,6 +7,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.EventHandler;
 import org.piegottin.pinotifier.services.friends.FriendsService;
+import org.piegottin.pinotifier.utils.MessageUtils;
+import org.piegottin.pinotifier.utils.UsernameUtils;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -23,7 +25,14 @@ public class AsyncMessageListener implements Listener {
         HashMap<UUID, Boolean> awaitingMessage = friendsService.getAwaitingMessage();
         if (awaitingMessage.getOrDefault(playerId, false)) {
             String message = event.getMessage();
-            friendsService.addNotification(player, message);
+
+            if (UsernameUtils.isValidNick(message))
+                friendsService.addNotification(player, message);
+            else
+                player.sendMessage(
+                        MessageUtils.wrongUsername.replace("{username}", message)
+                );
+
             awaitingMessage.remove(playerId);
             event.setCancelled(true);
         }

@@ -2,10 +2,12 @@ package org.piegottin.pinotifier.services.friends;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.piegottin.pinotifier.config.Configs;
 import org.piegottin.pinotifier.config.CustomConfig;
+import org.piegottin.pinotifier.utils.MessageUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,21 +46,31 @@ public class FriendsService {
             friends.remove(targetPlayer);
             getLogger().info(friends.toString());
             playerConfig.add("players." + player.getName() + ".friends", friends);
-            player.sendMessage("Você removeu " + targetPlayer + " da sua lista de notificações.");
+
+            player.sendMessage(
+                    MessageUtils.removeFriendViaInv.replace("{user}", ChatColor.stripColor(targetPlayer))
+            );
         } else {
-            player.sendMessage(targetPlayer + " não está na sua lista de notificações.");
+            player.sendMessage(
+                    MessageUtils.itsNotAFriend.replace("{user}", ChatColor.stripColor(targetPlayer))
+            );
         }
     }
 
     public void listNotifications(Player player) {
         List<String> friends = getFriendsList(player);
         if (!friends.isEmpty()) {
-            player.sendMessage("\nSua lista de notificações:");
+            player.sendMessage(
+                    MessageUtils.listFriends
+            );
+            player.sendMessage("");
             for (String notification : friends) {
-                player.sendMessage("- " + notification);
+                player.sendMessage("§9§l» §r" + notification);
             }
         } else {
-            player.sendMessage("Sua lista de notificações está vazia.");
+            player.sendMessage(
+                    MessageUtils.noFriends
+            );
         }
     }
 
@@ -71,7 +83,9 @@ public class FriendsService {
         }
 
         infoSection.set("phone", phone);
-        player.sendMessage("Seu número de telefone foi definido como " + phone + ".");
+        player.sendMessage(
+                MessageUtils.definedPhone.replace("{phone}", phone)
+        );
     }
 
     public ConfigurationSection createOrGetPlayerSection(Player player) {

@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.piegottin.pinotifier.gui.CustomInventoryView;
 import org.piegottin.pinotifier.services.friends.FriendsService;
+import org.piegottin.pinotifier.utils.MessageUtils;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -33,7 +34,7 @@ public class InventoryClickListener implements Listener {
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                         if(itemMeta.getDisplayName().equals("§aAdicionar amigo")){
                             customView.close();
-                            player.sendMessage("§aDigite no chat o nome do amigo que deseja adicionar.");
+                            player.sendMessage(MessageUtils.addUserViaChat);
                             friendsService.getAwaitingMessage().put(player.getUniqueId(), true);
                             return;
                         }
@@ -54,5 +55,4 @@ public class InventoryClickListener implements Listener {
         customView.close();
         getLogger().info("Removing " + playerName + " from " + player.getName() + "'s friends list.");
     }
-
 }
