@@ -34,7 +34,7 @@ public class FriendsGUI {
 
         fillEmptySlots(friends, friendsGUI);
 
-        ItemStack head = getCustomHead(CustomSkulls.ADD_SIGN.getBase64(), "§aAdicionar amigo");
+        ItemStack head = getCustomHead(CustomSkulls.ADD_SIGN.getBase64(), "§aAdicionar amigo", "§7Clique para adicionar um amigo");
 
         friendsGUI.getTopInventory().setItem(INVENTORY_SIZE - 9, head);
 
@@ -65,7 +65,7 @@ public class FriendsGUI {
         return playerHead;
     }
 
-    public static ItemStack getCustomHead(String base64, String title) {
+    public static ItemStack getCustomHead(String base64, String title, String lore) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta headMeta = (SkullMeta) head.getItemMeta();
 
@@ -73,6 +73,7 @@ public class FriendsGUI {
         GameProfile profile = new GameProfile(uuid, "custom_head");
         profile.getProperties().put("textures", new Property("textures", base64));
         headMeta.setDisplayName(title);
+        headMeta.setLore(List.of(lore));
         try {
             Field profileField = headMeta.getClass().getDeclaredField("profile");
             profileField.setAccessible(true);
