@@ -6,6 +6,7 @@ import org.piegottin.pinotifier.config.Configs;
 import org.piegottin.pinotifier.executors.PINotifierCommandExecutor;
 import org.piegottin.pinotifier.config.CustomConfig;
 import org.piegottin.pinotifier.gui.FriendsGUI;
+import org.piegottin.pinotifier.gui.InventoryClickListener;
 import org.piegottin.pinotifier.listeners.PlayerJoinListener;
 import org.piegottin.pinotifier.services.friends.FriendsService;
 import org.piegottin.pinotifier.tasks.ConfigSaveTask;
@@ -46,7 +47,11 @@ public final class PINotifier extends JavaPlugin {
 
         new ConfigSaveTask(this).runTaskTimer(this, 600, 600);
 
+        friendsService = new FriendsService();
+        friendsGUI = new FriendsGUI(friendsService);
+
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        getServer().getPluginManager().registerEvents(new InventoryClickListener(friendsService), this);
         getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor(friendsGUI, friendsService));
     }
 
