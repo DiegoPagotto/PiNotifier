@@ -6,12 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.piegottin.pinotifier.config.Configs;
-import org.piegottin.pinotifier.config.CustomConfig;
-import org.piegottin.pinotifier.services.NotificationService;
-import org.piegottin.pinotifier.services.implementation.WhatsAppNotificationService;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.piegottin.pinotifier.services.notifications.NotificationService;
+import org.piegottin.pinotifier.services.notifications.implementation.WhatsAppNotificationService;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -52,10 +48,6 @@ public class PlayerJoinListener implements Listener {
     }
 
     private String getPlayerPhone(String playerName) {
-        CustomConfig config = Configs.getUsersConfig();
-
-        ConfigurationSection allPlayers = config.getFile().getConfigurationSection("players");
-
         ConfigurationSection playerSection = allPlayers.getConfigurationSection(playerName);
         ConfigurationSection infoSection = playerSection.getConfigurationSection("info");
         if (infoSection == null) {

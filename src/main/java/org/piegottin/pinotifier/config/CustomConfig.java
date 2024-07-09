@@ -90,5 +90,7 @@ public class CustomConfig {
 
     public void createSection(String path) {
         this.fileConfiguration.createSection(path);
+
+        save();
     }
 }

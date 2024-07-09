@@ -1,5 +1,6 @@
 package org.piegottin.pinotifier.executors;
 
+import lombok.AllArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -7,20 +8,18 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.piegottin.pinotifier.config.Configs;
 import org.piegottin.pinotifier.config.CustomConfig;
-import org.piegottin.pinotifier.services.NotificationService;
-import org.piegottin.pinotifier.services.implementation.WhatsAppNotificationService;
+import org.piegottin.pinotifier.gui.FriendsGUI;
+import org.piegottin.pinotifier.services.friends.FriendsService;
 
 import java.util.List;
 
 import static org.bukkit.Bukkit.getLogger;
 
+@AllArgsConstructor
 public class PINotifierCommandExecutor implements CommandExecutor {
-
-    private CustomConfig playersConfig;
-
-    public PINotifierCommandExecutor() {
-        this.playersConfig = Configs.getUsersConfig();
-    }
+    private final CustomConfig playerConfig = Configs.getUsersConfig();
+    private final FriendsGUI friendsGUI;
+    private final FriendsService friendsService;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -32,7 +31,7 @@ public class PINotifierCommandExecutor implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length < 1) {
-            sender.sendMessage("Uso: /pinotifier add <nick>, /pinotifier remove <nick>, /pinotifier list ou /pinotifier setphone <phone>");
+            friendsGUI.open(player);
             return true;
         }
 
@@ -72,12 +71,10 @@ public class PINotifierCommandExecutor implements CommandExecutor {
     }
 
     private void addNotification(Player player, String targetPlayer) {
-        List<String> friends = getFriendsList(player);
+        List<String> friends = friendsService.getFriendsList(player);
         if (!friends.contains(targetPlayer)) {
             friends.add(targetPlayer);
-
-            playersConfig.add("players." + player.getName() + ".friends", friends);
-
+            playerConfig.add("players." + player.getName() + ".friends", friends);
             player.sendMessage("Você adicionou " + targetPlayer + " à sua lista de notificações.");
         } else {
             player.sendMessage(targetPlayer + " já está na sua lista de notificações.");
@@ -85,13 +82,11 @@ public class PINotifierCommandExecutor implements CommandExecutor {
     }
 
     private void removeNotification(Player player, String targetPlayer) {
-        List<String> friends = getFriendsList(player);
+        List<String> friends = friendsService.getFriendsList(player);
         if (friends.contains(targetPlayer)) {
             friends.remove(targetPlayer);
             getLogger().info(friends.toString());
-
-            playersConfig.add("players." + player.getName() + ".friends", friends);
-
+            playerConfig.add("players." + player.getName() + ".friends", friends);
             player.sendMessage("Você removeu " + targetPlayer + " da sua lista de notificações.");
         } else {
             player.sendMessage(targetPlayer + " não está na sua lista de notificações.");
@@ -99,7 +94,7 @@ public class PINotifierCommandExecutor implements CommandExecutor {
     }
 
     private void listNotifications(Player player) {
-        List<String> friends = getFriendsList(player);
+        List<String> friends = friendsService.getFriendsList(player);
         if (!friends.isEmpty()) {
             player.sendMessage("\nSua lista de notificações:");
             for (String notification : friends) {
@@ -112,7 +107,7 @@ public class PINotifierCommandExecutor implements CommandExecutor {
 
     private void setPhone(Player player, String phone) {
 
-        ConfigurationSection playerSection = createOrGetPlayerSection(player);
+        ConfigurationSection playerSection = friendsService.createOrGetPlayerSection(player);
 
         ConfigurationSection infoSection = playerSection.getConfigurationSection("info");
         if (infoSection == null) {
@@ -121,25 +116,5 @@ public class PINotifierCommandExecutor implements CommandExecutor {
 
         infoSection.set("phone", phone);
         player.sendMessage("Seu número de telefone foi definido como " + phone + ".");
-    }
-
-
-
-    private ConfigurationSection createOrGetPlayerSection(Player player) {
-        ConfigurationSection playerSection = playersConfig.getConfigurationSection("players." + player.getName());
-
-        if (playerSection == null) {
-            playersConfig.createSection("players." + player.getName());
-            getLogger().info("Creating new player section for " + player.getName());
-        }
-
-        playerSection = playersConfig.getConfigurationSection("players." + player.getName());
-
-        return playerSection;
-    }
-
-    private List<String> getFriendsList(Player player) {
-        ConfigurationSection playerSection = createOrGetPlayerSection(player);
-        return playerSection.getStringList("friends");
     }
 }

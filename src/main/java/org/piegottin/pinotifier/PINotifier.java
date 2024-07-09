@@ -1,11 +1,14 @@
 package org.piegottin.pinotifier;
 
+import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.piegottin.pinotifier.config.Configs;
 import org.piegottin.pinotifier.executors.PINotifierCommandExecutor;
 import org.piegottin.pinotifier.config.CustomConfig;
+import org.piegottin.pinotifier.gui.FriendsGUI;
 import org.piegottin.pinotifier.listeners.PlayerJoinListener;
+import org.piegottin.pinotifier.services.friends.FriendsService;
 import org.piegottin.pinotifier.tasks.ConfigSaveTask;
 
 import java.io.IOException;
@@ -13,8 +16,13 @@ import java.util.HashMap;
 
 public final class PINotifier extends JavaPlugin {
 
+    @Getter
     private static PINotifier instance;
+    @Getter
     private final HashMap<String, CustomConfig> configs = new HashMap<>();
+
+    private FriendsGUI friendsGUI;
+    private FriendsService friendsService;
 
     @Override
     public void onLoad() {
@@ -41,7 +49,7 @@ public final class PINotifier extends JavaPlugin {
         new ConfigSaveTask(this).runTaskTimer(this, 600, 600);
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
-        getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor());
+        getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor(friendsGUI, friendsService));
     }
 
     @Override
@@ -53,11 +61,4 @@ public final class PINotifier extends JavaPlugin {
         Configs.saveConfigs();
     }
 
-    public static PINotifier getInstance() {
-        return instance;
-    }
-
-    public HashMap<String, CustomConfig> getConfigs() {
-        return this.configs;
-    }
 }
