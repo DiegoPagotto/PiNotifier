@@ -3,6 +3,8 @@ package org.piegottin.pinotifier.services.friends;
 import lombok.AllArgsConstructor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.piegottin.pinotifier.config.Configs;
+import org.piegottin.pinotifier.config.CustomConfig;
 
 import java.util.List;
 
@@ -10,13 +12,13 @@ import static org.bukkit.Bukkit.getLogger;
 
 @AllArgsConstructor
 public class FriendsService {
-    private final ConfigurationSection playerSection;
+    private final CustomConfig playerConfig = Configs.getUsersConfig();
 
     public void addNotification(Player player, String targetPlayer) {
         List<String> friends = getFriendsList(player);
         if (!friends.contains(targetPlayer)) {
             friends.add(targetPlayer);
-            playerSection.set(player.getName() + ".friends", friends);
+            playerConfig.add("players." + player.getName() + ".friends", friends);
             player.sendMessage("Você adicionou " + targetPlayer + " à sua lista de notificações.");
         } else {
             player.sendMessage(targetPlayer + " já está na sua lista de notificações.");
@@ -28,7 +30,7 @@ public class FriendsService {
         if (friends.contains(targetPlayer)) {
             friends.remove(targetPlayer);
             getLogger().info(friends.toString());
-            playerSection.set(player.getName() + ".friends", friends);
+            playerConfig.add("players." + player.getName() + ".friends", friends);
             player.sendMessage("Você removeu " + targetPlayer + " da sua lista de notificações.");
         } else {
             player.sendMessage(targetPlayer + " não está na sua lista de notificações.");
@@ -48,7 +50,6 @@ public class FriendsService {
     }
 
     public void setPhone(Player player, String phone) {
-
         ConfigurationSection playerSection = createOrGetPlayerSection(player);
 
         ConfigurationSection infoSection = playerSection.getConfigurationSection("info");
@@ -61,10 +62,10 @@ public class FriendsService {
     }
 
     public ConfigurationSection createOrGetPlayerSection(Player player) {
-        ConfigurationSection playerSection = this.playerSection.getConfigurationSection(player.getName());
+        ConfigurationSection playerSection = this.playerConfig.getConfigurationSection("players." + player.getName());
         if (playerSection == null) {
             getLogger().info("Creating new player section for " + player.getName());
-            playerSection = this.playerSection.createSection(player.getName());
+            this.playerConfig.createSection("players." + player.getName());
         }
         return playerSection;
     }

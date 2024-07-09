@@ -5,25 +5,28 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.piegottin.pinotifier.config.Configs;
 import org.piegottin.pinotifier.services.notifications.NotificationService;
 import org.piegottin.pinotifier.services.notifications.implementation.WhatsAppNotificationService;
 
 import static org.bukkit.Bukkit.getLogger;
 
 public class PlayerJoinListener implements Listener {
-    private ConfigurationSection allPlayers;
+
+    private final ConfigurationSection allPlayers;
     private final NotificationService notificationService;
 
-    public PlayerJoinListener(ConfigurationSection playerNotificationLists, ConfigurationSection tokenSection) {
-        this.allPlayers = playerNotificationLists;
-        this.notificationService = new WhatsAppNotificationService(tokenSection);
+    public PlayerJoinListener() {
+        this.allPlayers = Configs.getUsersConfig().getConfigurationSection("players");
 
+        this.notificationService = new WhatsAppNotificationService(
+                Configs.getCredentialsConfig().getConfigurationSection("tokens")
+        );
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
 
         getLogger().info(allPlayers.getKeys(false).toString());
         for (String playerName : allPlayers.getKeys(false)) {
