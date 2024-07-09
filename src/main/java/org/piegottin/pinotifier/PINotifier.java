@@ -1,7 +1,6 @@
 package org.piegottin.pinotifier;
 
 import lombok.Getter;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.piegottin.pinotifier.config.Configs;
 import org.piegottin.pinotifier.executors.PINotifierCommandExecutor;
@@ -11,7 +10,6 @@ import org.piegottin.pinotifier.listeners.PlayerJoinListener;
 import org.piegottin.pinotifier.services.friends.FriendsService;
 import org.piegottin.pinotifier.tasks.ConfigSaveTask;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public final class PINotifier extends JavaPlugin {
@@ -43,7 +41,7 @@ public final class PINotifier extends JavaPlugin {
         |_|   |_| |_| \\_|\\___/ \\__|_|_| |_|\\___|_|  \s
         \n
         
-        Made with <3 by Piegottin and Bortoletto,JoaoG
+        Made with <3 by Piegottin and Bortoletto,Joao G
         """);
 
         new ConfigSaveTask(this).runTaskTimer(this, 600, 600);
@@ -60,5 +58,4 @@ public final class PINotifier extends JavaPlugin {
     public void saveYamlConfig() {
         Configs.saveConfigs();
     }
-
 }
