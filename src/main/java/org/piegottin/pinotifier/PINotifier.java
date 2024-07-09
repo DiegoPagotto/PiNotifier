@@ -52,7 +52,7 @@ public final class PINotifier extends JavaPlugin {
         friendsGUI = new FriendsGUI(friendsService);
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerSection, tokenSection), this);
-        getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
+        getServer().getPluginManager().registerEvents(new InventoryClickListener(friendsService), this);
         getCommand("pinotifier").setExecutor(new PINotifierCommandExecutor(friendsGUI, friendsService));
     }
 
