@@ -9,6 +9,8 @@ import org.piegottin.pinotifier.PINotifier;
 import java.io.File;
 import java.util.Objects;
 
+import static org.bukkit.Bukkit.getLogger;
+
 public class CustomConfig {
 
     private final String fileName;
@@ -32,7 +34,7 @@ public class CustomConfig {
             try {
                 this.file.createNewFile();
             } catch (Exception e) {
-                System.out.println("Error creating file " + fileName + ".yml");
+                getLogger().info("Error creating file " + fileName + ".yml");
             }
         }
 
@@ -50,7 +52,7 @@ public class CustomConfig {
         try {
             this.fileConfiguration.save(this.file);
         } catch (Exception e) {
-            System.out.println("Error saving file " + fileName + ".yml");
+            getLogger().info("Error saving file " + fileName + ".yml");
         }
 
         reload();
