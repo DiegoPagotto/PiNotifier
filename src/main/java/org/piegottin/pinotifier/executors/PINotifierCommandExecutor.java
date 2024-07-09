@@ -5,6 +5,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.piegottin.pinotifier.config.Configs;
+import org.piegottin.pinotifier.config.CustomConfig;
 import org.piegottin.pinotifier.services.NotificationService;
 import org.piegottin.pinotifier.services.implementation.WhatsAppNotificationService;
 
@@ -13,11 +15,11 @@ import java.util.List;
 import static org.bukkit.Bukkit.getLogger;
 
 public class PINotifierCommandExecutor implements CommandExecutor {
-    private final ConfigurationSection playerSection;
 
+    private CustomConfig playersConfig;
 
-    public PINotifierCommandExecutor(ConfigurationSection playerSection) {
-        this.playerSection = playerSection;
+    public PINotifierCommandExecutor() {
+        this.playersConfig = Configs.getUsersConfig();
     }
 
     @Override
@@ -73,7 +75,9 @@ public class PINotifierCommandExecutor implements CommandExecutor {
         List<String> friends = getFriendsList(player);
         if (!friends.contains(targetPlayer)) {
             friends.add(targetPlayer);
-            playerSection.set(player.getName() + ".friends", friends);
+
+            playersConfig.add("players." + player.getName() + ".friends", friends);
+
             player.sendMessage("Você adicionou " + targetPlayer + " à sua lista de notificações.");
         } else {
             player.sendMessage(targetPlayer + " já está na sua lista de notificações.");
@@ -85,7 +89,9 @@ public class PINotifierCommandExecutor implements CommandExecutor {
         if (friends.contains(targetPlayer)) {
             friends.remove(targetPlayer);
             getLogger().info(friends.toString());
-            playerSection.set(player.getName() + ".friends", friends);
+
+            playersConfig.add("players." + player.getName() + ".friends", friends);
+
             player.sendMessage("Você removeu " + targetPlayer + " da sua lista de notificações.");
         } else {
             player.sendMessage(targetPlayer + " não está na sua lista de notificações.");
@@ -120,11 +126,15 @@ public class PINotifierCommandExecutor implements CommandExecutor {
 
 
     private ConfigurationSection createOrGetPlayerSection(Player player) {
-        ConfigurationSection playerSection = this.playerSection.getConfigurationSection(player.getName());
+        ConfigurationSection playerSection = playersConfig.getConfigurationSection("players." + player.getName());
+
         if (playerSection == null) {
+            playersConfig.createSection("players." + player.getName());
             getLogger().info("Creating new player section for " + player.getName());
-            playerSection = this.playerSection.createSection(player.getName());
         }
+
+        playerSection = playersConfig.getConfigurationSection("players." + player.getName());
+
         return playerSection;
     }
 
