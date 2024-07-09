@@ -34,7 +34,7 @@ public class CustomConfig {
             try {
                 this.file.createNewFile();
             } catch (Exception e) {
-                getLogger().info("Error creating file " + fileName + ".yml");
+                getLogger().warning("Error creating file " + fileName + ".yml");
             }
         }
 
@@ -52,7 +52,7 @@ public class CustomConfig {
         try {
             this.fileConfiguration.save(this.file);
         } catch (Exception e) {
-            getLogger().info("Error saving file " + fileName + ".yml");
+            getLogger().warning("Error saving file " + fileName + ".yml");
         }
 
         reload();
