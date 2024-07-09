@@ -34,9 +34,13 @@ public class FriendsService {
         if (!friends.contains(targetPlayer)) {
             friends.add(targetPlayer);
             playerConfig.add("players." + player.getName() + ".friends", friends);
-            player.sendMessage("Você adicionou " + targetPlayer + " à sua lista de notificações.");
+            player.sendMessage(
+                    MessageUtils.addFriend.replace("{user}", ChatColor.stripColor(targetPlayer))
+            );
         } else {
-            player.sendMessage(targetPlayer + " já está na sua lista de notificações.");
+            player.sendMessage(
+                    MessageUtils.alreadyFriend.replace("{user}", ChatColor.stripColor(targetPlayer))
+            );
         }
     }
 

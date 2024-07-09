@@ -6,6 +6,8 @@ public class MessageUtils {
 
     public static String addUserViaChat = prefix + "§aDigite no chat o §rnome §ado amigo que deseja adicionar";
     public static String removeFriendViaInv = prefix + "§cO usuário §r{user} §cfoi removido da sua lista de amigos!";
+    public static String addFriend = prefix + "§aO usuário §r{user} §afoi adicionado à sua lista de amigos!";
+    public static String alreadyFriend = prefix + "§cO usuário §r{user} §cjá está na sua lista de amigos!";
     public static String itsNotAFriend = prefix + "§cO usuário §r{user} §cnão é seu amigo ainda!";
     public static String noFriends = prefix + "§cVocê não tem amigos adicionados ainda!";
     public static String onlyUser = prefix + "§cEste comando só pode ser executado por um jogador.";
