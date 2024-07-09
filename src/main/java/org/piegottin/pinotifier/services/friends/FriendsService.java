@@ -78,16 +78,18 @@ public class FriendsService {
     }
 
     public void setPhone(Player player, String phone) {
-        ConfigurationSection playerSection = createOrGetPlayerSection(player);
+        String cleanedPhone = phone.replaceAll("[^0-9]", "");
+        String formattedPhone = "+55" + cleanedPhone;
 
+        ConfigurationSection playerSection = createOrGetPlayerSection(player);
         ConfigurationSection infoSection = playerSection.getConfigurationSection("info");
         if (infoSection == null) {
             infoSection = playerSection.createSection("info");
         }
 
-        infoSection.set("phone", phone);
+        infoSection.set("phone", formattedPhone);
         player.sendMessage(
-                MessageUtils.definedPhone.replace("{phone}", phone)
+                MessageUtils.definedPhone.replace("{phone}", formattedPhone)
         );
     }
 
