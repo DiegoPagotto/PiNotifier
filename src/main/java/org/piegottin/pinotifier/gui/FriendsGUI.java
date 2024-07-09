@@ -33,6 +33,8 @@ public class FriendsGUI {
 
         OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
         meta.setOwningPlayer(player);
+        meta.setDisplayName("§a" + playerName);
+        meta.setLore(List.of("§7Clique para remover da sua lista de amigos"));
         playerHead.setItemMeta(meta);
 
         return playerHead;
