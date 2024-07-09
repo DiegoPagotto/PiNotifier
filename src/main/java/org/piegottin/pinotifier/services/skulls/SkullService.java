@@ -26,7 +26,7 @@ public class SkullService {
         return playerHead;
     }
 
-    public static ItemStack getCustomHead(String base64, String title, String lore) {
+    public static ItemStack getCustomHead(String base64, String title, List<String> lore) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta headMeta = (SkullMeta) head.getItemMeta();
 
@@ -34,7 +34,7 @@ public class SkullService {
         GameProfile profile = new GameProfile(uuid, "custom_head");
         profile.getProperties().put("textures", new Property("textures", base64));
         headMeta.setDisplayName(title);
-        headMeta.setLore(List.of(lore));
+        headMeta.setLore(lore);
         try {
             Field profileField = headMeta.getClass().getDeclaredField("profile");
             profileField.setAccessible(true);

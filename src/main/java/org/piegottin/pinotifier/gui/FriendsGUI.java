@@ -10,12 +10,13 @@ import org.piegottin.pinotifier.services.friends.FriendsService;
 
 import java.util.List;
 
+import static org.piegottin.pinotifier.constants.GUIConstants.INVENTORY_SIZE;
 import static org.piegottin.pinotifier.services.skulls.SkullService.createPlayerHead;
 import static org.piegottin.pinotifier.services.skulls.SkullService.getCustomHead;
+import static org.piegottin.pinotifier.utils.GUIUtils.fillEmptySlots;
 
 @AllArgsConstructor
 public class FriendsGUI {
-    private final Integer INVENTORY_SIZE = 36;
     private final FriendsService friendsService;
 
     public void open(Player player){
@@ -27,23 +28,14 @@ public class FriendsGUI {
             friendsGUI.getTopInventory().addItem(friendHead);
         }
 
-        fillEmptySlots(friends, friendsGUI);
+        ItemStack addFriend = getCustomHead(CustomSkulls.ADD_SIGN.getBase64(), "§aAdicionar amigo", List.of("§7Clique para adicionar um amigo"));
+        friendsGUI.getTopInventory().setItem(INVENTORY_SIZE - 7, addFriend);
 
-        ItemStack head = getCustomHead(CustomSkulls.ADD_SIGN.getBase64(), "§aAdicionar amigo", "§7Clique para adicionar um amigo");
+        ItemStack settings = getCustomHead(CustomSkulls.SETTINGS.getBase64(), "§fConfigurações", List.of("§7Clique para abrir as configurações"));
+        friendsGUI.getTopInventory().setItem(INVENTORY_SIZE - 3, settings);
 
-        friendsGUI.getTopInventory().setItem(INVENTORY_SIZE - 9, head);
+        fillEmptySlots(friendsGUI);
 
         player.openInventory(friendsGUI.getTopInventory());
-    }
-
-    private void fillEmptySlots(List<String> friends, CustomInventoryView friendsGUI) {
-        ItemStack emptySlot = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta emptySlotMeta = emptySlot.getItemMeta();
-        emptySlotMeta.setDisplayName("§7");
-        emptySlot.setItemMeta(emptySlotMeta);
-
-        for(int slotIndex = friends.size(); slotIndex < INVENTORY_SIZE; slotIndex++){
-            friendsGUI.getTopInventory().setItem(slotIndex, emptySlot);
-        }
     }
 }
