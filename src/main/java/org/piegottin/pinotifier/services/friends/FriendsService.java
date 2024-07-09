@@ -1,18 +1,23 @@
 package org.piegottin.pinotifier.services.friends;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.piegottin.pinotifier.config.Configs;
 import org.piegottin.pinotifier.config.CustomConfig;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static org.bukkit.Bukkit.getLogger;
 
 @AllArgsConstructor
 public class FriendsService {
     private final CustomConfig playerConfig = Configs.getUsersConfig();
+    @Getter
+    private final HashMap<UUID, Boolean> awaitingMessage = new HashMap<>();
 
     public void createPlayerSection(Player player) {
         ConfigurationSection playerSection = this.playerConfig.getConfigurationSection("players." + player.getName());
