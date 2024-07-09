@@ -5,6 +5,7 @@ public class MessageUtils {
     private static String prefix = "§6§l[§rPINotifier§6§l] §9§l» §r";
 
     public static String addUserViaChat = prefix + "§aDigite no chat o §rnome §ado amigo que deseja adicionar";
+    public static String setPhoneViaChat = prefix + "§aDigite no chat o seu §rtelefone §ano formato: §r(XX) XXXXX-XXXX";
     public static String removeFriendViaInv = prefix + "§cO usuário §r{user} §cfoi removido da sua lista de amigos!";
     public static String addFriend = prefix + "§aO usuário §r{user} §afoi adicionado à sua lista de amigos!";
     public static String alreadyFriend = prefix + "§cO usuário §r{user} §cjá está na sua lista de amigos!";
