@@ -6,11 +6,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.EventHandler;
+import org.piegottin.pinotifier.entities.ChatEvent;
+import org.piegottin.pinotifier.enums.ChatAction;
 import org.piegottin.pinotifier.services.friends.FriendsService;
 import org.piegottin.pinotifier.utils.MessageUtils;
 import org.piegottin.pinotifier.utils.UsernameUtils;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -22,18 +26,26 @@ public class AsyncMessageListener implements Listener {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
 
-        HashMap<UUID, Boolean> awaitingMessage = friendsService.getAwaitingMessage();
-        if (awaitingMessage.getOrDefault(playerId, false)) {
+        List<ChatEvent> awaitingMessage = friendsService.getAwaitingMessage();
+        Optional<ChatEvent> chatEventByPlayerId = friendsService.getChatEventByPlayerId(playerId);
+        if (chatEventByPlayerId.isPresent()) {
             String message = event.getMessage();
 
-            if (UsernameUtils.isValidNick(message))
-                friendsService.addNotification(player, message);
-            else
-                player.sendMessage(
-                        MessageUtils.wrongUsername.replace("{username}", message)
-                );
+            switch (chatEventByPlayerId.get().getChatAction()) {
+                case ADD_FRIEND -> {
+                    if (UsernameUtils.isValidNick(message))
+                        friendsService.addNotification(player, message);
+                    else
+                        player.sendMessage(
+                                MessageUtils.wrongUsername.replace("{username}", message)
+                        );
+                }
+                case SET_PHONE -> {
+                    friendsService.setPhone(player, message);
+                }
+            }
 
-            awaitingMessage.remove(playerId);
+            awaitingMessage.remove(chatEventByPlayerId.get());
             event.setCancelled(true);
         }
     }

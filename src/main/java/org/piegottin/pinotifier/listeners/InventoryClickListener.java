@@ -10,9 +10,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.piegottin.pinotifier.entities.ChatEvent;
+import org.piegottin.pinotifier.enums.ChatAction;
 import org.piegottin.pinotifier.gui.CustomInventoryView;
 import org.piegottin.pinotifier.gui.SettingsGUI;
 import org.piegottin.pinotifier.services.friends.FriendsService;
+import org.piegottin.pinotifier.services.settings.SettingsService;
 import org.piegottin.pinotifier.utils.MessageUtils;
 
 import static org.bukkit.Bukkit.getLogger;
@@ -20,6 +23,7 @@ import static org.bukkit.Bukkit.getLogger;
 @AllArgsConstructor
 public class InventoryClickListener implements Listener {
     private final FriendsService friendsService;
+    private final SettingsService settingsService;
     private final SettingsGUI settingsGUI;
 
     @EventHandler
@@ -37,6 +41,8 @@ public class InventoryClickListener implements Listener {
                         switch (ChatColor.stripColor(itemMeta.getDisplayName())) {
                             case "Adicionar amigo" -> addFriend(player, customView);
                             case "Configurações" -> openSettings(player, customView);
+                            case "Telefone" -> setPhone(player, customView);
+                            case "Discord" -> setDiscord(player, customView);
                             default -> removeFriend(player, itemMeta, customView);
                         }
                     } else {
@@ -51,7 +57,7 @@ public class InventoryClickListener implements Listener {
     private void addFriend(Player player, CustomInventoryView customView) {
         customView.close();
         player.sendMessage(MessageUtils.addUserViaChat);
-        friendsService.getAwaitingMessage().put(player.getUniqueId(), true);
+        friendsService.getAwaitingMessage().add(new ChatEvent(player.getUniqueId(),true, ChatAction.ADD_FRIEND));
     }
 
     private void removeFriend(Player player, ItemMeta itemMeta, CustomInventoryView customView) {
@@ -67,4 +73,13 @@ public class InventoryClickListener implements Listener {
         player.sendMessage("§aAbrindo configurações...");
     }
 
+    private void setPhone(Player player, CustomInventoryView customView) {
+        customView.close();
+        settingsService.setPhone(player);
+    }
+
+    private void setDiscord(Player player, CustomInventoryView customView) {
+        customView.close();
+        settingsService.setDiscord(player);
+    }
 }
