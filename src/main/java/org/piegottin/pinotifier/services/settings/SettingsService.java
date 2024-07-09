@@ -17,6 +17,7 @@ public class SettingsService {
     }
 
     public void setDiscord(Player player) {
-        player.sendMessage("not yet implemented");
+        player.sendMessage(MessageUtils.setDiscordViaChat);
+        friendsService.getAwaitingMessage().add(new ChatEvent(player.getUniqueId(),true, ChatAction.SET_DISCORD));
     }
 }

@@ -79,19 +79,61 @@ public class FriendsService {
 
     public void setPhone(Player player, String phone) {
         String cleanedPhone = phone.replaceAll("[^0-9]", "");
+
+        if (!isPhoneValid(cleanedPhone)) {
+            player.sendMessage(MessageUtils.wrongPhoneFormat);
+            return;
+        }
+
         String formattedPhone = "+55" + cleanedPhone;
 
         ConfigurationSection playerSection = createOrGetPlayerSection(player);
-        ConfigurationSection infoSection = playerSection.getConfigurationSection("info");
-        if (infoSection == null) {
-            infoSection = playerSection.createSection("info");
-        }
+        ConfigurationSection infoSection = getOrCreateInfoSection(playerSection);
 
         infoSection.set("phone", formattedPhone);
         player.sendMessage(
                 MessageUtils.definedPhone.replace("{phone}", formattedPhone)
         );
     }
+
+    private boolean isPhoneValid(String phone) {
+        return phone.matches("\\d{11}");
+    }
+
+    public String getPhone(Player player) {
+        ConfigurationSection playerSection = createOrGetPlayerSection(player);
+        ConfigurationSection infoSection = getOrCreateInfoSection(playerSection);
+
+        if (!infoSection.contains("phone")) {
+            return "(00) 00000-0000";
+        }
+
+        String phone = infoSection.getString("phone");
+        if (phone != null && phone.startsWith("+55")) {
+            phone = phone.substring(3); // remove "+55"
+            phone = "(" + phone.substring(0, 2) + ") " + phone.substring(2, 7) + "-" + phone.substring(7);
+        }
+        return phone;
+    }
+
+    public void setDiscord(Player player, String discord) {
+        ConfigurationSection playerSection = createOrGetPlayerSection(player);
+        ConfigurationSection infoSection = getOrCreateInfoSection(playerSection);
+
+        infoSection.set("discord", discord);
+        player.sendMessage(MessageUtils.definedDiscord.replace("{discord}", discord));
+    }
+
+    public String getDiscord(Player player) {
+        ConfigurationSection playerSection = createOrGetPlayerSection(player);
+        ConfigurationSection infoSection = getOrCreateInfoSection(playerSection);
+        if (!infoSection.contains("discord")) {
+            return "Nome#0000";
+        }
+        return infoSection.getString("discord");
+    }
+
+
 
     public ConfigurationSection createOrGetPlayerSection(Player player) {
         ConfigurationSection playerSection = this.playerConfig.getConfigurationSection("players." + player.getName());
@@ -112,4 +154,14 @@ public class FriendsService {
                 .filter(chatEvent -> chatEvent.getPlayerId().equals(playerId))
                 .findFirst();
     }
+
+    private ConfigurationSection getOrCreateInfoSection(ConfigurationSection playerSection) {
+        ConfigurationSection infoSection = playerSection.getConfigurationSection("info");
+        if (infoSection == null) {
+            infoSection = playerSection.createSection("info");
+        }
+        return infoSection;
+    }
+
+
 }

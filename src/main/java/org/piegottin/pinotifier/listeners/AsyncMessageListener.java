@@ -40,9 +40,8 @@ public class AsyncMessageListener implements Listener {
                                 MessageUtils.wrongUsername.replace("{username}", message)
                         );
                 }
-                case SET_PHONE -> {
-                    friendsService.setPhone(player, message);
-                }
+                case SET_PHONE -> friendsService.setPhone(player, message);
+                case SET_DISCORD -> friendsService.setDiscord(player, message);
             }
 
             awaitingMessage.remove(chatEventByPlayerId.get());
