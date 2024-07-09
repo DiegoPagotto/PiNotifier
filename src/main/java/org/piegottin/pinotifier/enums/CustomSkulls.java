@@ -1,4 +1,4 @@
-package org.piegottin.pinotifier.gui.enums;
+package org.piegottin.pinotifier.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
