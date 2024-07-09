@@ -14,6 +14,14 @@ import static org.bukkit.Bukkit.getLogger;
 public class FriendsService {
     private final CustomConfig playerConfig = Configs.getUsersConfig();
 
+    public void createPlayerSection(Player player) {
+        ConfigurationSection playerSection = this.playerConfig.getConfigurationSection("players." + player.getName());
+        if (playerSection == null) {
+            getLogger().info("Creating new player section for " + player.getName());
+            this.playerConfig.createSection("players." + player.getName());
+        }
+    }
+
     public void addNotification(Player player, String targetPlayer) {
         List<String> friends = getFriendsList(player);
         if (!friends.contains(targetPlayer)) {

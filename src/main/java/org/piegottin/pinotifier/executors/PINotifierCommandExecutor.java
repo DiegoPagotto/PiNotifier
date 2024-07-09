@@ -28,6 +28,7 @@ public class PINotifierCommandExecutor implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length < 1) {
+            friendsService.createPlayerSection(player);
             friendsGUI.open(player);
             return true;
         }
